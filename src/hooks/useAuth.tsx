@@ -1,9 +1,8 @@
-"use client"; 
+'use client';
 
-
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, AuthState } from "@/types/tipos-auth";
-import { authService } from "@/services/auth-service";
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User, AuthState } from '@/types/tipos-auth';
+import { authService } from '@/services/auth-service';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
@@ -22,27 +21,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    // Verificar se o usuário está autenticado ao carregar a página
-    const checkAuth = async () => {
-      try {
-        const currentUser = authService.getCurrentUser();
+    const unsubscribe = authService.onAuthStateChanged(
+      (user) => {
         setState({
-          user: currentUser,
-          isAuthenticated: !!currentUser,
+          user,
+          isAuthenticated: !!user,
           isLoading: false,
           error: null,
         });
-      } catch (error) {
+      },
+      (error) => {
+        console.error('Erro na verificação de autenticação:', error);
         setState({
           user: null,
           isAuthenticated: false,
           isLoading: false,
-          error: "Erro ao verificar autenticação",
+          error:
+            error.code === 'auth/network-request-failed'
+              ? 'Falha na conexão com o servidor. Verifique sua rede ou tente novamente.'
+              : error.message || 'Erro ao verificar autenticação',
         });
       }
-    };
-
-    checkAuth();
+    );
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -59,7 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState({
         ...state,
         isLoading: false,
-        error: error.message || "Erro ao fazer login",
+        error:
+          error.code === 'auth/network-request-failed'
+            ? 'Falha na conexão com o servidor. Verifique sua rede ou tente novamente.'
+            : error.message || 'Erro ao fazer login',
       });
       throw error;
     }
@@ -79,7 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState({
         ...state,
         isLoading: false,
-        error: error.message || "Erro ao registrar usuário",
+        error:
+          error.code === 'auth/network-request-failed'
+            ? 'Falha na conexão com o servidor. Verifique sua rede ou tente novamente.'
+            : error.message || 'Erro ao registrar usuário',
       });
       throw error;
     }
@@ -99,7 +106,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState({
         ...state,
         isLoading: false,
-        error: error.message || "Erro ao fazer logout",
+        error:
+          error.code === 'auth/network-request-failed'
+            ? 'Falha na conexão com o servidor. Verifique sua rede ou tente novamente.'
+            : error.message || 'Erro ao fazer logout',
       });
     }
   };
@@ -121,7 +131,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
+    console.error('useAuth chamado fora de um AuthProvider. Stack:', new Error().stack);
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
   return context;
 }
