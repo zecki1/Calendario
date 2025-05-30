@@ -26,9 +26,9 @@ html {
 
 @layer base {
   :root {
-    --color1: #e30613;
-    --color2: #e30613;
-    --color3: #9a1915;
+    --color1: #ffffff;
+    --color2: #ffffff;
+    --color3: #ffffff;
     --black: #000000;
     --white: #fff;
     --background: #ffffff;
@@ -62,9 +62,9 @@ html {
   }
 
   .dark {
-    --color1: #2eb6d4;
-    --color2: #64ddf8;
-    --color3: #8eeaff;
+    --color1: #e3af06;
+    --color2: #e3af06;
+    --color3: #e3af06;
     --background: #061113;
     --foreground: #e4e6e7;
     --card: #061113;
@@ -233,4 +233,8 @@ html {
   width: 100%;
   background: var(--background) !important;
   border: 0px !important;
+}
+.fc-col-header-cell-cushion {
+  color: var(--black) !important;
+
 }

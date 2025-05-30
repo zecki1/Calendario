@@ -1,124 +1,89 @@
-"use client"; 
+'use client';
 
-
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
-import { useAppointment } from "@/hooks/useAppointment";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { DatePicker } from "@/components/shared/date-picker";
-import { TimeSelector } from "@/components/TimeSelector";
-import { formatDate } from "@/types/utils";
-import { ArrowLeft, Check } from "lucide-react";
-import Link from "next/link";
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { firestore } from '@/lib/firebase';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Check } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AppointmentPage() {
-  const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
-  const { createAppointment } = useAppointment();
-  
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
-
-  // Redirecionar se não estiver autenticado
-  React.useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isAuthenticated, router]);
+  const fixedDate = '2023-06-15';
+  const fixedTime = '15:00';
 
   const handleSubmit = async () => {
-    if (!selectedDate || !selectedTime || !user) return;
-    
+    if (!user) {
+      alert('Você precisa estar logado para agendar.');
+      return;
+    }
+
     setIsSubmitting(true);
-    setMessage(null);
-    
+
     try {
-      await createAppointment(selectedDate, selectedTime);
-      
-      setMessage({
-        type: 'success',
-        text: `Seu horário foi agendado para ${formatDate(selectedDate)} às ${selectedTime}.`
+      // Verificar se o usuário já agendou
+      const appointmentsRef = collection(firestore, 'users', user.id, 'appointments');
+      const q = query(appointmentsRef, where('userId', '==', user.id));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        alert('Você já realizou seu agendamento.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Criar agendamento
+      await addDoc(appointmentsRef, {
+        userId: user.id,
+        date: fixedDate,
+        time: fixedTime,
+        createdAt: new Date(),
       });
-      
-      // Opcional: redirecionar após sucesso
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
-      
+
+      alert('Agendamento confirmado para 15/06/2023 às 15:00!');
     } catch (error: any) {
-      setMessage({
-        type: 'error',
-        text: error.message || "Não foi possível realizar o agendamento."
-      });
+      console.error('Erro ao agendar:', error);
+      alert(`Erro ao criar agendamento: ${error.message || 'Tente novamente.'}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!isAuthenticated) {
-    return <div className="flex min-h-screen items-center justify-center">Carregando...</div>;
-  }
-
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center">
-          <Link href="/dashboard" className="mr-4">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Button>
-          </Link>
-          <h1 className="text-2xl font-bold">Agendar Horário</h1>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>Selecione uma data e horário</CardTitle>
-            <CardDescription>
-              Os horários disponíveis são de 2 em 2 horas
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {message && (
-              <div className={`p-3 rounded-md ${message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-                {message.text}
-              </div>
-            )}
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Data</label>
-              <DatePicker 
-                date={selectedDate} 
-                setDate={setSelectedDate} 
-              />
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Agendar Consulta</CardTitle>
+          <CardDescription>Confirme seu agendamento único.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <strong>Data:</strong> {fixedDate}
             </div>
-            
-            {selectedDate && (
-              <TimeSelector
-                selectedDate={selectedDate}
-                selectedTime={selectedTime}
-                onSelectTime={setSelectedTime}
-              />
+            <div>
+              <strong>Horário:</strong> {fixedTime}
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button asChild variant="outline">
+            <Link href="/dashboard">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
+            </Link>
+          </Button>
+          <Button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? 'Carregando...' : (
+              <>
+                <Check className="mr-2 h-4 w-4" /> Confirmar
+              </>
             )}
-          </CardContent>
-          <CardFooter>
-            <Button
-              className="w-full"
-              disabled={!selectedDate || !selectedTime || isSubmitting}
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? "Confirmando..." : "Confirmar Agendamento"}
-            </Button>
-          </CardFooter>
-        </Card>
-      </main>
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

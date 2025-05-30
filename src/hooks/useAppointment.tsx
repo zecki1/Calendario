@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Appointment } from "@/types/tipos-auth";
@@ -7,9 +7,10 @@ import { useAuth } from "./useAuth";
 
 interface AppointmentContextType {
   appointments: Appointment[];
+  allAppointments: Appointment[];
   isLoading: boolean;
   error: string | null;
-  createAppointment: (date: Date, time: string) => Promise<void>;
+  createAppointment: (date: Date, time: string, userName: string) => Promise<void>;
   cancelAppointment: (appointmentId: string) => Promise<void>;
   refreshAppointments: () => Promise<void>;
 }
@@ -17,12 +18,13 @@ interface AppointmentContextType {
 const AppointmentContext = createContext<AppointmentContextType | undefined>(undefined);
 
 export function AppointmentProvider({ children }: { children: ReactNode }) {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAppointments = async () => {
+  const fetchUserAppointments = async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -38,23 +40,40 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const fetchAllAppointments = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const allAppointments = await appointmentService.getAllAppointments();
+      setAllAppointments(allAppointments);
+    } catch (error: any) {
+      setError(error.message || "Erro ao buscar todos os agendamentos");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (isAuthenticated && user) {
-      fetchAppointments();
+    if (user) {
+      fetchUserAppointments();
+      fetchAllAppointments();
     } else {
       setAppointments([]);
+      setAllAppointments([]);
     }
-  }, [isAuthenticated, user]);
+  }, [user]);
 
-  const createAppointment = async (date: Date, time: string) => {
+  const createAppointment = async (date: Date, time: string, userName: string) => {
     if (!user) throw new Error("Usuário não autenticado");
+    if (appointments.length > 0) throw new Error("Você já fez um palpite!");
 
     setIsLoading(true);
     setError(null);
 
     try {
-      await appointmentService.createAppointment(user.id, date, time);
-      await fetchAppointments();
+      await appointmentService.createAppointment(user.id, date, time, userName);
+      await Promise.all([fetchUserAppointments(), fetchAllAppointments()]);
     } catch (error: any) {
       setError(error.message || "Erro ao criar agendamento");
       throw error;
@@ -68,8 +87,8 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      await appointmentService.cancelAppointment(appointmentId);
-      await fetchAppointments();
+      await appointmentService.cancelAppointment(appointmentId, user?.id || '');
+      await Promise.all([fetchUserAppointments(), fetchAllAppointments()]);
     } catch (error: any) {
       setError(error.message || "Erro ao cancelar agendamento");
       throw error;
@@ -79,13 +98,14 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshAppointments = async () => {
-    await fetchAppointments();
+    await Promise.all([fetchUserAppointments(), fetchAllAppointments()]);
   };
 
   return (
     <AppointmentContext.Provider
       value={{
         appointments,
+        allAppointments,
         isLoading,
         error,
         createAppointment,

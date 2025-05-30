@@ -9,15 +9,15 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Log config for debugging
 if (!firebaseConfig.apiKey) {
-  console.error('Missing Firebase API Key. Check .env.local or Vercel environment variables.');
+  console.error('Missing Firebase API Key. Check .env.local or environment variables.');
 }
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 
-export { auth, firestore };
+export { app, auth, firestore };
