@@ -53,7 +53,7 @@ export default function RegisterPage() {
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center">Registre-se!</CardTitle>
             <CardDescription className="text-center text-lg">
-              Crie sua conta para participar do jogo! 🎉
+              Crie sua conta para participar do palpite! 🎉
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

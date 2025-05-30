@@ -2,7 +2,7 @@
 
 ## Introdução
 
-Este repositório contém a aplicação web "Palpites do Arthurzinho", um jogo interativo onde os usuários podem palpitar a data e o horário do nascimento do Arthurzinho, com o palpite mais próximo ganhando um brinde especial. O projeto foi desenvolvido com Next.js, utilizando o App Router, TypeScript, Tailwind CSS e Shadcn/UI para uma interface moderna e responsiva. A aplicação inclui autenticação de usuários, um calendário para envio de palpites, animações com AOS e suporte a temas claro/escuro.
+Este repositório contém a aplicação web "Palpites do Arthurzinho", um palpite interativo onde os usuários podem palpitar a data e o horário do nascimento do Arthurzinho, com o palpite mais próximo ganhando um brinde especial. O projeto foi desenvolvido com Next.js, utilizando o App Router, TypeScript, Tailwind CSS e Shadcn/UI para uma interface moderna e responsiva. A aplicação inclui autenticação de usuários, um calendário para envio de palpites, animações com AOS e suporte a temas claro/escuro.
 
 A estrutura do projeto é modular, escalável e segue as melhores práticas do Next.js, sendo ideal para expansão ou adaptação a outros projetos web semelhantes. A integração com Firebase está configurada para autenticação e armazenamento de dados.
 
@@ -11,7 +11,7 @@ A estrutura do projeto é modular, escalável e segue as melhores práticas do N
 - **Autenticação de Usuários**: Sistema seguro de registro e login, permitindo que os usuários criem contas e acessem seus palpites.
 - **Envio de Palpites**: Cada usuário pode enviar um único palpite para a data e horário (entre 1º e 20 de junho de 2025) do nascimento do Arthurzinho usando um calendário interativo.
 - **Visualização de Palpites**: Usuários autenticados podem ver os palpites de outros participantes, identificados pelo nome completo ou apelido, exibidos no calendário.
-- **Regras do Jogo**: As regras são exibidas nas páginas de Login, Registro e Calendário, detalhando a limitação de um palpite por usuário, o formato do palpite, o prêmio e a visibilidade dos palpites.
+- **Regras do palpite**: As regras são exibidas nas páginas de Login, Registro e Calendário, detalhando a limitação de um palpite por usuário, o formato do palpite, o prêmio e a visibilidade dos palpites.
 - **Design Responsivo**: Interface adaptável para dispositivos móveis e desktops, com layouts lado a lado em telas maiores e empilhados em telas menores.
 - **Animações com AOS**: Animações suaves (ex.: `fade-up`, `fade-right`, `zoom-in`) aplicadas via biblioteca AOS para melhorar a experiência do usuário.
 - **Tema Claro/Escuro**: Alternância entre temas claro e escuro, com preferências salvas no `localStorage`.

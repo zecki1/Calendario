@@ -30,7 +30,7 @@ export default function LoginPage() {
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center">Bem-vindo!</CardTitle>
             <CardDescription className="text-center text-lg">
-              Faça login para participar do jogo! 🎉
+              Faça login para participar do palpite! 🎉
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

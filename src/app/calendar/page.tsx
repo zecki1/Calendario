@@ -142,7 +142,7 @@ export default function CalendarPage() {
         {/* Texto à direita */}
         <Card className="w-full lg:w-1/3 shadow-xl" data-aos="fade-left" data-aos-delay="100">
           <CardContent className="pt-6">
-            <h2 className="text-2xl font-semibold mb-4">Bem-vindo ao Jogo do Arthurzinho!</h2>
+            <h2 className="text-2xl font-semibold mb-4">Bem-vindo ao palpite do Arthurzinho!</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300">
               Olá, tudo incrível por aí? 😊 <br />
               Estou super animado porque logo serei papai! 🎉 O Arthurzinho está a caminho, e quero compartilhar essa alegria com você de um jeito especial. Como forma de agradecimento pelo apoio incrível que tenho recebido, preparei uma brincadeira divertida: <strong>adivinhe o dia e o horário que o Arthurzinho vai nascer!</strong> <br /><br />
