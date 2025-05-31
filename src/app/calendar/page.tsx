@@ -180,12 +180,12 @@ export default function CalendarPage() {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="flex flex-col min-h-screen p-2 sm:p-4 ">
       <div className="container mx-auto w-full max-w-6xl flex flex-col gap-4">
         {/* Bem-vindo ao Jogo do Arthurzinho! */}
         <Card className="w-full shadow-xl" data-aos="fade-up" data-aos-delay="100">
           <CardContent className="pt-4 sm:pt-6">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">Bem-vindo ao Jogo do Arthurzinho!</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">Bem-vindo ao palpite do Arthurzinho!</h2>
             <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
               Olá, tudo incrível por aí? 😊 <br />
               Estou super animado porque logo serei papai! 🎉 O Arthurzinho está a caminho, e quero compartilhar essa alegria com você. Participe da brincadeira: <strong>adivinhe o dia e horário do nascimento!</strong> <br /><br />
@@ -203,7 +203,7 @@ export default function CalendarPage() {
           {/* Calendário */}
           <Card className="w-full shadow-xl" data-aos="fade-right" data-aos-delay="400">
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl font-semibold">Escolha Sua Data</CardTitle>
+              <CardTitle className="text-lg sm:text-xl font-semibold">Escolha sua data</CardTitle>
             </CardHeader>
             <CardContent className="p-2 sm:p-4 ">
               <FullCalendar
@@ -239,7 +239,7 @@ export default function CalendarPage() {
                   isDateInValidRange(arg.date) ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
                 }
                 eventClassNames="rounded-md p-1 m-0.5"
-                className="bg-white dark:bg-gray-800 rounded-lg text-xs border"
+                className=" rounded-lg text-xs border"
               />
               {hasAppointment ? (
                 <p className="text-xs sm:text-sm mt-4 text-center" data-aos="fade-up" data-aos-delay="500">
@@ -261,7 +261,7 @@ export default function CalendarPage() {
           {/* Regras do Jogo */}
           <Card className="w-full shadow-xl  lg:w-2/3" data-aos="fade-up" data-aos-delay="300">
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl font-semibold">Regras do Palpite</CardTitle>
+              <CardTitle className="text-lg sm:text-xl font-semibold">Regras do palpite</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="list-disc pl-5 space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
