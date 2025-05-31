@@ -270,7 +270,7 @@ export default function CalendarPage() {
                 <li><strong>Formato do palpite</strong>: Escolha uma data (entre 1º e 30 de junho de 2025) e um horário (HH:mm, com intervalos de 2 horas).</li>
                 <li><strong>Prêmio</strong>: O participante que acertar ou chegar mais próximo ganhará um brinde especial!</li>
                 <li><strong>Visibilidade dos palpites</strong>: Veja os palpites de outros, identificados pelo nome ou apelido.</li>
-                <li><strong>Prazo</strong>: Palpites até 30 de junho de 2025.</li>
+                <li><strong>Prazo</strong>: Palpites até 05 de junho de 2025.</li>
               </ul>
             </CardContent>
           </Card>
